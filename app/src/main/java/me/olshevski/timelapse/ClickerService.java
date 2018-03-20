@@ -14,11 +14,10 @@ public class ClickerService extends Service {
     private static final int SERVICE_NOTIFICATION_ID = 1;
 
     private static final String ACTION_START_FOREGROUND = "start_foreground";
-    private static final String ACTION_RUN = "run";
+    private static final String ACTION_START = "start";
     private static final String ACTION_PLUS = "plus";
     private static final String ACTION_MINUS = "minus";
 
-    private boolean isPlaying = false;
     private NotificationManager notificationManager;
     private TimelapseManager timelapseManager;
 
@@ -58,7 +57,7 @@ public class ClickerService extends Service {
                 case ACTION_START_FOREGROUND:
                     startForeground();
                     break;
-                case ACTION_RUN:
+                case ACTION_START:
                     handleRunAction();
                     break;
             }
@@ -66,16 +65,43 @@ public class ClickerService extends Service {
         return START_STICKY;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (timelapseManager.isStarted()) {
+            timelapseManager.stop();
+        }
+    }
+
+    private void startForeground() {
+        Notification notification = createNotification();
+        startForeground(SERVICE_NOTIFICATION_ID, notification);
+    }
+
+    private void handleRunAction() {
+        if (timelapseManager.isStarted()) {
+            timelapseManager.stop();
+        } else {
+            timelapseManager.start();
+        }
+        updateNotification();
+    }
+
+    private void updateNotification() {
+        Notification notification = createNotification();
+        notificationManager.notify(SERVICE_NOTIFICATION_ID, notification);
+    }
+
     private Notification createNotification() {
         Notification.Builder notificationBuilder =
                 new Notification.Builder(this)
                         .setContentTitle("testTitle")
                         .setContentText("message")
-                        .setSmallIcon(timelapseManager.isRunning()
+                        .setSmallIcon(timelapseManager.isStarted()
                                 ? R.drawable.ic_play_circle_outline_white_24dp
                                 : R.drawable.ic_timelapse_white_24dp)
                         .setPriority(Notification.PRIORITY_DEFAULT);
-        addAction(notificationBuilder, ACTION_RUN, isPlaying ? "stop" : "start");
+        addAction(notificationBuilder, ACTION_START, timelapseManager.isStarted() ? "stop" : "start");
         addAction(notificationBuilder, ACTION_MINUS, "-1 sec");
         addAction(notificationBuilder, ACTION_PLUS, "+1 sec");
         return notificationBuilder.build();
@@ -89,21 +115,6 @@ public class ClickerService extends Service {
         Notification.Action action = new Notification.Action.Builder(0, title,
                 pendingIntent).build();
         notificationBuilder.addAction(action);
-    }
-
-    private void startForeground() {
-        Notification notification = createNotification();
-        startForeground(SERVICE_NOTIFICATION_ID, notification);
-    }
-
-    private void updateNotification() {
-        Notification notification = createNotification();
-        notificationManager.notify(SERVICE_NOTIFICATION_ID, notification);
-    }
-
-    private void handleRunAction() {
-        timelapseManager.toggleRunning();
-        updateNotification();
     }
 
 }

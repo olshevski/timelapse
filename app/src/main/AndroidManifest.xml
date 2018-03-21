@@ -34,7 +34,7 @@
                 />
         </service>
         <service
-            android:name=".ClickerService"
+            android:name=".ForegroundService"
             android:exported="false"
             />
 

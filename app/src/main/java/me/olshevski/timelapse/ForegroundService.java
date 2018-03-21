@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-public class ClickerService extends Service {
+public class ForegroundService extends Service {
 
     private static final int SERVICE_NOTIFICATION_ID = 1;
 
@@ -22,13 +22,13 @@ public class ClickerService extends Service {
     private TimelapseManager timelapseManager;
 
     public static void startForeground(Context context) {
-        Intent intent = new Intent(context, ClickerService.class);
+        Intent intent = new Intent(context, ForegroundService.class);
         intent.setAction(ACTION_START_FOREGROUND);
         context.startService(intent);
     }
 
     public static void stopForeground(Context context) {
-        Intent intent = new Intent(context, ClickerService.class);
+        Intent intent = new Intent(context, ForegroundService.class);
         context.stopService(intent);
     }
 
@@ -101,7 +101,8 @@ public class ClickerService extends Service {
                                 ? R.drawable.ic_play_circle_outline_white_24dp
                                 : R.drawable.ic_timelapse_white_24dp)
                         .setPriority(Notification.PRIORITY_DEFAULT);
-        addAction(notificationBuilder, ACTION_START, timelapseManager.isStarted() ? "stop" : "start");
+        addAction(notificationBuilder, ACTION_START,
+                timelapseManager.isStarted() ? "stop" : "start");
         addAction(notificationBuilder, ACTION_MINUS, "-1 sec");
         addAction(notificationBuilder, ACTION_PLUS, "+1 sec");
         return notificationBuilder.build();
@@ -109,7 +110,7 @@ public class ClickerService extends Service {
 
     private void addAction(Notification.Builder notificationBuilder, String intentAction,
             String title) {
-        Intent intent = new Intent(this, ClickerService.class);
+        Intent intent = new Intent(this, ForegroundService.class);
         intent.setAction(intentAction);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
         Notification.Action action = new Notification.Action.Builder(0, title,

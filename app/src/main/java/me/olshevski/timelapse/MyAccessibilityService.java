@@ -1,11 +1,8 @@
 package me.olshevski.timelapse;
 
 import android.accessibilityservice.AccessibilityService;
-import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-
-import java.util.List;
 
 public class MyAccessibilityService extends AccessibilityService {
 
@@ -13,36 +10,40 @@ public class MyAccessibilityService extends AccessibilityService {
     private static final String CAMERA_ACTIVITY = "com.android.camera.activity.main.CameraActivity";
     private static final String CAMERA_BUTTON = "com.android.camera2:id/photo_video_button";
 
-    private ClickerServiceManager clickerServiceManager;
     private TimelapseManager timelapseManager;
-    private List<AccessibilityNodeInfo> button;
+    private AccessibilityNodeInfo cameraButton;
+    private final TimelapseManager.Action cameraButtonAction = this::clickCameraButton;
 
     @Override
     public void onCreate() {
         super.onCreate();
         MyApplication application = ((MyApplication) getApplication());
-        clickerServiceManager = application.getClickerServiceManager();
         timelapseManager = application.getTimelapseManager();
+        timelapseManager.setAction(cameraButtonAction);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        timelapseManager.setAction(null);
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
-        Log.v("ERASEME", accessibilityEvent.toString());
-
-        if (SYSTEM_UI_PACKAGE.equals(accessibilityEvent.getPackageName())) {
-            // ignore notifications overlay
-            return;
-        }
-
-        boolean isCameraActivityRunning = CAMERA_ACTIVITY.equals(accessibilityEvent.getClassName());
-        clickerServiceManager.setClickerServiceStarted(isCameraActivityRunning);
-        if (isCameraActivityRunning) {
-            AccessibilityNodeInfo rootNode = accessibilityEvent.getSource();
-            AccessibilityNodeInfo button = rootNode.findAccessibilityNodeInfosByViewId(
-                    CAMERA_BUTTON).get(0);
-            timelapseManager.setCameraButton(button);
-        } else {
-            timelapseManager.setCameraButton(null);
+        boolean isSystemUI = SYSTEM_UI_PACKAGE.equals(accessibilityEvent.getPackageName());
+        timelapseManager.setOnHold(isSystemUI);
+        if (!isSystemUI) {
+            boolean isCameraActivityRunning = CAMERA_ACTIVITY.equals(
+                    accessibilityEvent.getClassName());
+            if (isCameraActivityRunning) {
+                ForegroundService.startForeground(this);
+                AccessibilityNodeInfo rootNode = accessibilityEvent.getSource();
+                cameraButton = rootNode.findAccessibilityNodeInfosByViewId(
+                        CAMERA_BUTTON).get(0);
+            } else {
+                ForegroundService.stopForeground(this);
+                cameraButton = null;
+            }
         }
     }
 
@@ -50,4 +51,11 @@ public class MyAccessibilityService extends AccessibilityService {
     public void onInterrupt() {
 
     }
+
+    private void clickCameraButton() {
+        if (cameraButton != null) {
+            cameraButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        }
+    }
+
 }

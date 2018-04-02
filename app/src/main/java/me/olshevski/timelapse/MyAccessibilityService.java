@@ -3,6 +3,9 @@ package me.olshevski.timelapse;
 import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.Toast;
+
+import java.util.List;
 
 public class MyAccessibilityService extends AccessibilityService {
 
@@ -11,7 +14,7 @@ public class MyAccessibilityService extends AccessibilityService {
     private static final String CAMERA_BUTTON = "com.android.camera2:id/photo_video_button";
 
     private TimelapseManager timelapseManager;
-    private AccessibilityNodeInfo cameraButton;
+    private AccessibilityNodeInfo rootNode;
     private final TimelapseManager.Action cameraButtonAction = this::clickCameraButton;
 
     @Override
@@ -37,12 +40,10 @@ public class MyAccessibilityService extends AccessibilityService {
                     accessibilityEvent.getClassName());
             if (isCameraActivityRunning) {
                 ForegroundService.startForeground(this);
-                AccessibilityNodeInfo rootNode = accessibilityEvent.getSource();
-                cameraButton = rootNode.findAccessibilityNodeInfosByViewId(
-                        CAMERA_BUTTON).get(0);
+                rootNode = accessibilityEvent.getSource();
             } else {
                 ForegroundService.stopForeground(this);
-                cameraButton = null;
+                rootNode = null;
             }
         }
     }
@@ -53,8 +54,14 @@ public class MyAccessibilityService extends AccessibilityService {
     }
 
     private void clickCameraButton() {
-        if (cameraButton != null) {
-            cameraButton.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        if (rootNode != null) {
+            List<AccessibilityNodeInfo> cameraButton =
+                    rootNode.findAccessibilityNodeInfosByViewId(CAMERA_BUTTON);
+            if (cameraButton.size() > 0) {
+                cameraButton.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);
+            } else {
+                Toast.makeText(this, R.string.message_no_camera_button, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

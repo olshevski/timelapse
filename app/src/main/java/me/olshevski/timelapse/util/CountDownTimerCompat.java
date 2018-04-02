@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.olshevski.timelapse;
+package me.olshevski.timelapse.util;
 
 import android.os.Handler;
 import android.os.Message;
@@ -61,7 +61,7 @@ public abstract class CountDownTimerCompat {
     private final long mCountdownInterval;
 
     private long mStopTimeInFuture;
-    
+
     /**
     * boolean representing if the timer was cancelled
     */

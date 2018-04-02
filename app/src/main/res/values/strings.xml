@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Timelapse</string>
+    <string name="title_notification">Timelapse</string>
+    <plurals name="title_number_of_seconds">
+        <item quantity="one">%d second</item>
+        <item quantity="other">%d seconds</item>
+    </plurals>
+    <string name="message_no_camera_button">No shutter button found</string>
+    <string name="title_action_stop">stop</string>
+    <string name="title_action_start">start</string>
+    <string name="title_action_minus">-1 sec</string>
+    <string name="title_action_plus">+1 sec</string>
 </resources>

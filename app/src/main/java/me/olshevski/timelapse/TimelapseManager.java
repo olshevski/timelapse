@@ -1,16 +1,22 @@
 package me.olshevski.timelapse;
 
-import hugo.weaving.DebugLog;
+import android.content.Context;
+
+import me.olshevski.timelapse.util.CountDownTimerCompat;
 
 class TimelapseManager {
 
-    private static final int SECOND_IN_MILLIS = 1000;
-    private static final int DEFAULT_TIMELAPSE_TIME = 5;
+    private static final int MILLIS_IN_SECOND = 1000;
 
+    private final TimePreference timePreference;
     private boolean started;
     private boolean onHold;
     private CountDownTimerCompat timer;
     private Action action;
+
+    TimelapseManager(Context context) {
+        timePreference = new TimePreference(context);
+    }
 
     boolean isStarted() {
         return started;
@@ -23,7 +29,8 @@ class TimelapseManager {
 
     private void changeTimerState() {
         if (started && !onHold) {
-            timer = new TimelapseCountDownTimer(DEFAULT_TIMELAPSE_TIME);
+            int time = timePreference.getTime();
+            timer = new TimelapseCountDownTimer(time);
             timer.start();
         } else {
             if (timer != null) {
@@ -47,6 +54,24 @@ class TimelapseManager {
         this.action = action;
     }
 
+    int getTime() {
+        return timePreference.getTime();
+    }
+
+    void increaseTime() {
+        int time = timePreference.getTime();
+        timePreference.setTime(time + 1);
+    }
+
+    void decreaseTime() {
+        int time = timePreference.getTime();
+        int newTime = time - 1;
+        if (newTime < 1) {
+            newTime = 1;
+        }
+        timePreference.setTime(newTime);
+    }
+
     interface Action {
         void run();
     }
@@ -54,16 +79,14 @@ class TimelapseManager {
     private class TimelapseCountDownTimer extends CountDownTimerCompat {
 
         TimelapseCountDownTimer(int seconds) {
-            super(seconds * SECOND_IN_MILLIS, SECOND_IN_MILLIS);
+            super(seconds * MILLIS_IN_SECOND, MILLIS_IN_SECOND);
         }
 
-        @DebugLog
         @Override
         public void onTick(long millisUntilFinished) {
 
         }
 
-        @DebugLog
         @Override
         public void onFinish() {
             if (action != null) {

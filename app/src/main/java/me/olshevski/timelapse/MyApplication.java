@@ -9,7 +9,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        timelapseManager = new TimelapseManager();
+        timelapseManager = new TimelapseManager(this);
     }
 
     public TimelapseManager getTimelapseManager() {

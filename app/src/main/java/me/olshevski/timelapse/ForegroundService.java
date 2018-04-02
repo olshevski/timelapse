@@ -58,7 +58,13 @@ public class ForegroundService extends Service {
                     startForeground();
                     break;
                 case ACTION_START:
-                    handleRunAction();
+                    handleStartAction();
+                    break;
+                case ACTION_PLUS:
+                    handlePlusAction();
+                    break;
+                case ACTION_MINUS:
+                    handleMinusAction();
                     break;
             }
         }
@@ -78,7 +84,7 @@ public class ForegroundService extends Service {
         startForeground(SERVICE_NOTIFICATION_ID, notification);
     }
 
-    private void handleRunAction() {
+    private void handleStartAction() {
         if (timelapseManager.isStarted()) {
             timelapseManager.stop();
         } else {
@@ -93,29 +99,41 @@ public class ForegroundService extends Service {
     }
 
     private Notification createNotification() {
-        Notification.Builder notificationBuilder =
-                new Notification.Builder(this)
-                        .setContentTitle("testTitle")
-                        .setContentText("message")
-                        .setSmallIcon(timelapseManager.isStarted()
-                                ? R.drawable.ic_play_circle_outline_white_24dp
-                                : R.drawable.ic_timelapse_white_24dp)
-                        .setPriority(Notification.PRIORITY_DEFAULT);
-        addAction(notificationBuilder, ACTION_START,
-                timelapseManager.isStarted() ? "stop" : "start");
-        addAction(notificationBuilder, ACTION_MINUS, "-1 sec");
-        addAction(notificationBuilder, ACTION_PLUS, "+1 sec");
-        return notificationBuilder.build();
+        int time = timelapseManager.getTime();
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle(getString(R.string.app_name));
+        builder.setContentText(
+                getResources().getQuantityString(R.plurals.title_number_of_seconds, time, time));
+        builder.setSmallIcon(
+                timelapseManager.isStarted() ? R.drawable.ic_play_circle_outline_white_24dp
+                        : R.drawable.ic_timelapse_white_24dp);
+        builder.setPriority(Notification.PRIORITY_DEFAULT);
+        addAction(builder, ACTION_START,
+                timelapseManager.isStarted() ? R.string.title_action_stop
+                        : R.string.title_action_start);
+        addAction(builder, ACTION_MINUS, R.string.title_action_minus);
+        addAction(builder, ACTION_PLUS, R.string.title_action_plus);
+        return builder.build();
     }
 
     private void addAction(Notification.Builder notificationBuilder, String intentAction,
-            String title) {
+            int title) {
         Intent intent = new Intent(this, ForegroundService.class);
         intent.setAction(intentAction);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
-        Notification.Action action = new Notification.Action.Builder(0, title,
+        Notification.Action action = new Notification.Action.Builder(0, getString(title),
                 pendingIntent).build();
         notificationBuilder.addAction(action);
+    }
+
+    private void handlePlusAction() {
+        timelapseManager.increaseTime();
+        updateNotification();
+    }
+
+    private void handleMinusAction() {
+        timelapseManager.decreaseTime();
+        updateNotification();
     }
 
 }

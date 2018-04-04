@@ -60,7 +60,7 @@ public class MyAccessibilityService extends AccessibilityService {
             if (cameraButton.size() > 0) {
                 cameraButton.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);
             } else {
-                Toast.makeText(this, R.string.message_no_camera_button, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.toast_no_camera_button, Toast.LENGTH_SHORT).show();
             }
         }
     }

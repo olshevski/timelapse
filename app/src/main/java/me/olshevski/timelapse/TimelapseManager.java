@@ -2,6 +2,7 @@ package me.olshevski.timelapse;
 
 import android.content.Context;
 
+import me.olshevski.timelapse.pref.TimePreference;
 import me.olshevski.timelapse.util.CountDownTimerCompat;
 
 class TimelapseManager {

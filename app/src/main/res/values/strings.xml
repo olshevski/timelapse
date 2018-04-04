@@ -1,13 +1,25 @@
 <resources>
+
     <string name="app_name">Timelapse</string>
-    <string name="title_notification">Timelapse</string>
-    <plurals name="title_number_of_seconds">
-        <item quantity="one">%d second</item>
-        <item quantity="other">%d seconds</item>
+
+    <!-- notification -->
+    <string name="notification_title">Timelapse</string>
+    <plurals name="notification_message">
+        <item quantity="one">Every %d second</item>
+        <item quantity="other">Every %d seconds</item>
     </plurals>
-    <string name="message_no_camera_button">No shutter button found</string>
-    <string name="title_action_stop">stop</string>
-    <string name="title_action_start">start</string>
-    <string name="title_action_minus">-1 sec</string>
-    <string name="title_action_plus">+1 sec</string>
+    <string name="notification_action_stop">Stop</string>
+    <string name="notification_action_start">Start</string>
+    <string name="notification_action_minus">-1 sec</string>
+    <string name="notification_action_plus">+1 sec</string>
+
+    <!-- preferences -->
+    <string name="preference_accessibility_title">Accessibility</string>
+    <string name="preference_accessibility_summary_disabled">Please enable accessibility in system settings</string>
+    <string name="preference_accessibility_summary_enabled">Enabled</string>
+    <string name="preference_accessibility_button_enable">Enable</string>
+
+    <!-- misc -->
+    <string name="toast_no_camera_button">No shutter button found</string>
+
 </resources>

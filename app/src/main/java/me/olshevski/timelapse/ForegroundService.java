@@ -101,18 +101,18 @@ public class ForegroundService extends Service {
     private Notification createNotification() {
         int time = timelapseManager.getTime();
         Notification.Builder builder = new Notification.Builder(this);
-        builder.setContentTitle(getString(R.string.app_name));
+        builder.setContentTitle(getString(R.string.notification_title));
         builder.setContentText(
-                getResources().getQuantityString(R.plurals.title_number_of_seconds, time, time));
+                getResources().getQuantityString(R.plurals.notification_message, time, time));
         builder.setSmallIcon(
                 timelapseManager.isStarted() ? R.drawable.ic_play_circle_outline_white_24dp
                         : R.drawable.ic_timelapse_white_24dp);
         builder.setPriority(Notification.PRIORITY_DEFAULT);
         addAction(builder, ACTION_START,
-                timelapseManager.isStarted() ? R.string.title_action_stop
-                        : R.string.title_action_start);
-        addAction(builder, ACTION_MINUS, R.string.title_action_minus);
-        addAction(builder, ACTION_PLUS, R.string.title_action_plus);
+                timelapseManager.isStarted() ? R.string.notification_action_stop
+                        : R.string.notification_action_start);
+        addAction(builder, ACTION_MINUS, R.string.notification_action_minus);
+        addAction(builder, ACTION_PLUS, R.string.notification_action_plus);
         return builder.build();
     }
 

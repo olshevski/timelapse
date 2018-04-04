@@ -27,6 +27,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:preference-v14:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'ru.noties.spg:core:1.0.4'
     annotationProcessor 'ru.noties.spg:processor:1.0.4'

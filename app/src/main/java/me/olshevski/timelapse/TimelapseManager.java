@@ -4,19 +4,25 @@ import android.content.Context;
 
 import me.olshevski.timelapse.pref.GeneralPreference;
 import me.olshevski.timelapse.util.CountDownTimerCompat;
+import me.olshevski.timelapse.util.Utils;
 
 class TimelapseManager {
 
-    private static final int MILLIS_IN_SECOND = 1000;
+    private static final int THOUSAND_MS = 1000;
 
+    private final Context appContext;
     private final GeneralPreference generalPreference;
-    private boolean started;
-    private boolean onHold;
     private CountDownTimerCompat timer;
+    private TimelapseSoundPlayer timelapseSoundPlayer;
     private Action action;
 
-    TimelapseManager(Context context) {
-        generalPreference = new GeneralPreference(context);
+    private boolean started;
+    private boolean onHold;
+
+    TimelapseManager(Context appContext) {
+        Utils.assertAppContext(appContext);
+        this.appContext = appContext;
+        generalPreference = new GeneralPreference(appContext);
     }
 
     boolean isStarted() {
@@ -24,8 +30,12 @@ class TimelapseManager {
     }
 
     void start() {
+        if (started) {
+            throw new IllegalStateException("already started");
+        }
         started = true;
         changeTimerState();
+        changeSoundPlayerState();
     }
 
     private void changeTimerState() {
@@ -41,9 +51,29 @@ class TimelapseManager {
         }
     }
 
+    private void changeSoundPlayerState() {
+        if (started) {
+            if (generalPreference.isSoundsEnabled()) {
+                if (timelapseSoundPlayer != null) {
+                    throw new IllegalStateException("SoundPlayer instance already initialized");
+                }
+                timelapseSoundPlayer = new TimelapseSoundPlayer(appContext);
+            }
+        } else {
+            if (timelapseSoundPlayer != null) {
+                timelapseSoundPlayer.release();
+                timelapseSoundPlayer = null;
+            }
+        }
+    }
+
     void stop() {
+        if (!started) {
+            throw new IllegalStateException("already stopped");
+        }
         started = false;
         changeTimerState();
+        changeSoundPlayerState();
     }
 
     void setOnHold(boolean onHold) {
@@ -80,12 +110,18 @@ class TimelapseManager {
     private class TimelapseCountDownTimer extends CountDownTimerCompat {
 
         TimelapseCountDownTimer(int seconds) {
-            super(seconds * MILLIS_IN_SECOND, MILLIS_IN_SECOND);
+            super(seconds * THOUSAND_MS, THOUSAND_MS);
         }
 
         @Override
         public void onTick(long millisUntilFinished) {
-
+            if (timelapseSoundPlayer != null) {
+                if (millisUntilFinished <= THOUSAND_MS) {
+                    timelapseSoundPlayer.play(AudioClip.FINAL_SECOND);
+                } else if (millisUntilFinished <= 3 * THOUSAND_MS) {
+                    timelapseSoundPlayer.play(AudioClip.INCREMENT);
+                }
+            }
         }
 
         @Override

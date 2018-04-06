@@ -1,5 +1,6 @@
 package me.olshevski.timelapse.util;
 
+import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.provider.Settings;
@@ -8,6 +9,12 @@ import android.text.TextUtils;
 public final class Utils {
 
     private Utils() {
+    }
+
+    public static void assertAppContext(Context context) {
+        if (!(context instanceof Application)) {
+            throw new RuntimeException("Only application context is allowed");
+        }
     }
 
     /**

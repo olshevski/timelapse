@@ -21,6 +21,7 @@
     <string name="preference_sounds_title">Sounds</string>
 
     <!-- misc -->
-    <string name="toast_no_camera_button">No shutter button found</string>
+    <string name="toast_no_camera_button">No camera button found</string>
+    <string name="toast_no_accessibility_service">Accessibility service has already been destroyed</string>
 
 </resources>

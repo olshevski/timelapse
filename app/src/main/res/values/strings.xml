@@ -18,6 +18,7 @@
     <string name="preference_accessibility_summary_disabled">Please enable accessibility in system settings</string>
     <string name="preference_accessibility_summary_enabled">Enabled</string>
     <string name="preference_accessibility_button_enable">Enable</string>
+    <string name="preference_sounds_title">Sounds</string>
 
     <!-- misc -->
     <string name="toast_no_camera_button">No shutter button found</string>

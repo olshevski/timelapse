@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<android.support.v7.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <me.olshevski.timelapse.EnableAccessibilityPreference
-        android:key="@string/key_enable_accessibility"
+    <me.olshevski.timelapse.AccessibilityPreference
+        android:key="@string/key_accessibility"
         android:title="@string/preference_accessibility_title"
+        app:summaryOn="@string/preference_accessibility_summary_enabled"
+        app:summaryOff="@string/preference_accessibility_summary_disabled"
+        android:persistent="false"
         />
 
-</PreferenceScreen>
+    <android.support.v14.preference.SwitchPreference
+        android:key="@string/key_sounds"
+        android:title="@string/preference_sounds_title"
+        android:persistent="false"
+        />
+
+</android.support.v7.preference.PreferenceScreen>

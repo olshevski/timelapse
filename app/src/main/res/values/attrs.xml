@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="AccessibilityPreference">
+        <attr name="summaryOn" format="string" />
+        <attr name="summaryOff" format="string" />
+    </declare-styleable>
+
+</resources>

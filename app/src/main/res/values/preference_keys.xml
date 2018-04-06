@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="key_enable_accessibility" translatable="false">key_enable_accessibility</string>
+    <string name="key_accessibility" translatable="false">key_accessibility</string>
+    <string name="key_sounds" translatable="false">key_sounds</string>
 </resources>

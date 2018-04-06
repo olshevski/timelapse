@@ -3,21 +3,39 @@ package me.olshevski.timelapse;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v14.preference.SwitchPreference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
+import me.olshevski.timelapse.pref.GeneralPreference;
 import me.olshevski.timelapse.util.Utils;
 
 public class MyPreferenceFragment extends PreferenceFragmentCompat {
 
-    private EnableAccessibilityPreference enableAccessibilityPreference;
+    /* preference generated with SharedPreferencesGenerator */
+    private GeneralPreference generalPreference;
+
+    /* preferences from android.support.v7.preference package */
+    private AccessibilityPreference accessibilityPreference;
+    private SwitchPreference soundsPreference;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        generalPreference = new GeneralPreference(getContext());
+    }
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.preferences, rootKey);
-        enableAccessibilityPreference = (EnableAccessibilityPreference) findPreference(
-                getString(R.string.key_enable_accessibility));
-        enableAccessibilityPreference.setOnPreferenceClickListener(preference -> {
+        accessibilityPreference = (AccessibilityPreference) findPreference(
+                getString(R.string.key_accessibility));
+        accessibilityPreference.setOnPreferenceClickListener(preference -> {
             openAccessibilitySettings();
+            return true;
+        });
+        soundsPreference = (SwitchPreference) findPreference(getString(R.string.key_sounds));
+        soundsPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+            generalPreference.setSoundsEnabled((Boolean) newValue);
             return true;
         });
     }
@@ -31,10 +49,8 @@ public class MyPreferenceFragment extends PreferenceFragmentCompat {
         super.onStart();
         boolean isServiceEnabled = Utils.isAccessibilityServiceEnabled(getContext(),
                 MyAccessibilityService.class);
-        enableAccessibilityPreference.setAccessibilityEnabled(isServiceEnabled);
-        enableAccessibilityPreference.setSummary(
-                isServiceEnabled ? R.string.preference_accessibility_summary_enabled
-                        : R.string.preference_accessibility_summary_disabled);
+        accessibilityPreference.setAccessibilityEnabled(isServiceEnabled);
+        soundsPreference.setChecked(generalPreference.isSoundsEnabled());
     }
 
 }

@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package me.olshevski.timelapse.util;
+package me.olshevski.timelapse.misc;
 
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.util.SparseIntArray;
+
+import me.olshevski.timelapse.util.Utils;
 
 /**
  * Loads and plays custom sounds.

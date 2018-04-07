@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.olshevski.timelapse.util;
+package me.olshevski.timelapse.misc;
 
 import android.os.Handler;
 import android.os.Message;

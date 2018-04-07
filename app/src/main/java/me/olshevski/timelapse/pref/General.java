@@ -4,11 +4,11 @@ import ru.noties.spg.anno.SPGKey;
 import ru.noties.spg.anno.SPGPreference;
 
 @SPGPreference
-class General {
+final class General {
 
     boolean soundsEnabled;
 
     @SPGKey(defaultValue = "5")
-    int time;
+    int intervalTime;
 
 }
